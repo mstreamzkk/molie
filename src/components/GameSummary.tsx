@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { TableResult, PersonalBests } from '@/types/game';
 import { formatTime, isPersonalBest } from '@/lib/storage';
+import CelebrationEffect from './CelebrationEffect';
 
 interface GameSummaryProps {
     tableResults: TableResult[];
@@ -11,6 +12,34 @@ interface GameSummaryProps {
     personalBests: PersonalBests;
     onPlayAgain: () => void;
     onBackToMenu: () => void;
+}
+
+// Get encouraging message based on accuracy percentage
+function getEncouragingMessage(accuracy: number): { message: string; isSuperstar: boolean } {
+    if (accuracy >= 95) {
+        return { message: '🏆 SUPERSTAR! Amazing! 🌟', isSuperstar: true };
+    } else if (accuracy >= 80) {
+        return { message: '🌈 Fantastic work!', isSuperstar: false };
+    } else if (accuracy >= 70) {
+        return { message: '✨ Great progress!', isSuperstar: false };
+    } else if (accuracy >= 60) {
+        return { message: '👍 Well done!', isSuperstar: false };
+    } else if (accuracy >= 50) {
+        return { message: '🌟 Nice effort!', isSuperstar: false };
+    } else if (accuracy >= 40) {
+        return { message: '🎯 Getting there!', isSuperstar: false };
+    } else if (accuracy >= 20) {
+        return { message: '💪 Keep going!', isSuperstar: false };
+    } else {
+        return { message: '📚 Practice makes perfect!', isSuperstar: false };
+    }
+}
+
+// Determine celebration intensity based on accuracy
+function getCelebrationIntensity(accuracy: number): 'low' | 'medium' | 'high' {
+    if (accuracy >= 80) return 'high';
+    if (accuracy >= 50) return 'medium';
+    return 'low';
 }
 
 export default function GameSummary({
@@ -41,8 +70,13 @@ export default function GameSummary({
         result => isPersonalBest(result.table, result.timeMs)
     ).length;
 
+    // Get dynamic message and celebration intensity
+    const { message, isSuperstar } = getEncouragingMessage(accuracy);
+    const celebrationIntensity = getCelebrationIntensity(accuracy);
+
     return (
         <div className="game-container">
+            <CelebrationEffect intensity={celebrationIntensity} />
             <div className="screen-layout summary-layout">
                 {/* Header section with mascot and title */}
                 <div className="summary-header">
@@ -53,8 +87,11 @@ export default function GameSummary({
                         height={60}
                         style={{ maxHeight: '8vh', width: 'auto', height: 'auto' }}
                     />
-                    <div className="summary-title">
-                        🎉 Great Job!
+                    <div
+                        className={`summary-title ${isSuperstar ? 'superstar' : ''}`}
+                        style={{ marginBottom: 'var(--spacing-xs)' }}
+                    >
+                        {message}
                     </div>
                 </div>
 

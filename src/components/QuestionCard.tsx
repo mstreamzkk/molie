@@ -29,22 +29,36 @@ export default function QuestionCard({
     const [inputValue, setInputValue] = useState('');
     const [showFeedback, setShowFeedback] = useState(false);
     const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+    const [transitionState, setTransitionState] = useState<'enter' | 'idle' | 'exit'>('enter');
     const startTimeRef = useRef<number>(Date.now());
     const pausedTimeRef = useRef<number>(0);
     const inputRef = useRef<HTMLInputElement>(null);
+    const prevQuestionRef = useRef<Question | null>(null);
 
     // Reset state when question changes
     useEffect(() => {
-        setSelectedAnswer(null);
-        setInputValue('');
-        setShowFeedback(false);
-        setIsCorrectAnswer(false);
-        startTimeRef.current = Date.now();
-        pausedTimeRef.current = 0;
+        // Only run enter animation when question actually changes
+        if (prevQuestionRef.current !== question) {
+            setSelectedAnswer(null);
+            setInputValue('');
+            setShowFeedback(false);
+            setIsCorrectAnswer(false);
+            setTransitionState('enter');
+            startTimeRef.current = Date.now();
+            pausedTimeRef.current = 0;
+            prevQuestionRef.current = question;
 
-        // Focus input for free-text questions
-        if (question.questionType === 'free-text' && inputRef.current) {
-            setTimeout(() => inputRef.current?.focus(), 100);
+            // Reset to idle after enter animation completes
+            const enterTimer = setTimeout(() => {
+                setTransitionState('idle');
+            }, 300);
+
+            // Focus input for free-text questions
+            if (question.questionType === 'free-text' && inputRef.current) {
+                setTimeout(() => inputRef.current?.focus(), 100);
+            }
+
+            return () => clearTimeout(enterTimer);
         }
     }, [question]);
 
@@ -61,7 +75,7 @@ export default function QuestionCard({
     }, [isPaused]);
 
     const handleAnswer = useCallback((answer: string) => {
-        if (showFeedback || isPaused) return;
+        if (showFeedback || isPaused || transitionState === 'exit') return;
 
         const timeTakenMs = Date.now() - startTimeRef.current;
         const isCorrect = checkAnswer(answer, question.correctAnswer);
@@ -70,11 +84,15 @@ export default function QuestionCard({
         setIsCorrectAnswer(isCorrect);
         setShowFeedback(true);
 
-        // Brief delay before moving to next question
+        // Show feedback, then trigger exit animation before moving to next question
         setTimeout(() => {
-            onAnswer(answer, isCorrect, timeTakenMs);
-        }, 600);
-    }, [showFeedback, isPaused, question.correctAnswer, onAnswer]);
+            setTransitionState('exit');
+            // After exit animation completes, call onAnswer
+            setTimeout(() => {
+                onAnswer(answer, isCorrect, timeTakenMs);
+            }, 250);
+        }, 350);
+    }, [showFeedback, isPaused, transitionState, question.correctAnswer, onAnswer]);
 
     const handleInputKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && inputValue.trim()) {
@@ -133,14 +151,14 @@ export default function QuestionCard({
             </div>
 
             {/* Question - 20% */}
-            <div className="quiz-question">
+            <div className={`quiz-question ${transitionState === 'enter' ? 'question-slide-enter' : transitionState === 'exit' ? 'question-slide-exit' : ''}`}>
                 <div className="question-equation">
                     {questionText} = ?
                 </div>
             </div>
 
             {/* Answers - 50% */}
-            <div className="quiz-answers">
+            <div className={`quiz-answers ${transitionState === 'enter' ? 'question-slide-enter' : transitionState === 'exit' ? 'question-slide-exit' : ''}`}>
                 {question.questionType === 'multiple-choice' && question.choices ? (
                     <div className="choices-grid" style={{ height: '100%', alignContent: 'center' }}>
                         {question.choices.map((choice, index) => {

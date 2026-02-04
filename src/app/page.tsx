@@ -14,6 +14,7 @@ import Countdown from '@/components/Countdown';
 import QuestionCard from '@/components/QuestionCard';
 import GameSummary from '@/components/GameSummary';
 import PauseOverlay from '@/components/PauseOverlay';
+import TableTransition from '@/components/TableTransition';
 
 export default function Home() {
   const [gameState, setGameState] = useState<GameState>('menu');
@@ -108,9 +109,9 @@ export default function Home() {
         setPersonalBests(getPersonalBests());
         setGameState('summary');
       } else {
-        // Move to next table
+        // Move to next table - show celebration first
         setCurrentTableIndex(prev => prev + 1);
-        setGameState('countdown');
+        setGameState('tableTransition');
       }
     } else {
       // Next question
@@ -161,6 +162,11 @@ export default function Home() {
     setGameState('menu');
   };
 
+  // Table transition complete - proceed to countdown for next table
+  const handleTableTransitionComplete = useCallback(() => {
+    setGameState('countdown');
+  }, []);
+
   return (
     <>
       {/* Menu */}
@@ -194,6 +200,17 @@ export default function Home() {
             onSkip={handleSkipTable}
             onPause={handlePause}
             isPaused={isPaused}
+          />
+        </div>
+      )}
+
+      {/* Table Transition - celebration between tables */}
+      {gameState === 'tableTransition' && (
+        <div className="game-container">
+          <TableTransition
+            completedTable={selectedTables[currentTableIndex - 1]}
+            nextTable={currentTable}
+            onComplete={handleTableTransitionComplete}
           />
         </div>
       )}
