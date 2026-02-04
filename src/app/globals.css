@@ -85,8 +85,10 @@ body {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
   position: relative;
+  overflow-y: auto;
 }
 
 /* Card styles */
@@ -192,7 +194,7 @@ body {
   font-size: var(--font-size-4xl);
   font-weight: 800;
   text-align: center;
-  margin: var(--spacing-2xl) 0;
+  margin: var(--spacing-xl) 0;
   letter-spacing: 0.05em;
 }
 
@@ -238,7 +240,7 @@ body {
   grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-md);
   margin-top: auto;
-  padding-bottom: var(--spacing-lg);
+  padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0px));
 }
 
 /* Input styles */
@@ -363,23 +365,23 @@ body {
 .menu-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   flex: 1;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-md);
 }
 
 .menu-title {
   font-size: var(--font-size-2xl);
   font-weight: 800;
   text-align: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
 }
 
 .menu-subtitle {
   font-size: var(--font-size-base);
   color: var(--text-secondary);
   text-align: center;
-  margin-top: calc(-1 * var(--spacing-md));
+  margin-top: calc(-1 * var(--spacing-xs));
 }
 
 /* Table selection */
