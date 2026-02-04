@@ -1,6 +1,6 @@
 // Game Types for Multiplication Game
 
-export type GameState = 'menu' | 'countdown' | 'playing' | 'paused' | 'summary';
+export type GameState = 'menu' | 'countdown' | 'playing' | 'paused' | 'summary' | 'tableTransition';
 
 export type QuestionType = 'multiple-choice' | 'free-text';
 
