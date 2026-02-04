@@ -41,9 +41,9 @@ export default function GameSummary({
                     <Image
                         src="/molie_icon.png"
                         alt="Molie mascot"
-                        width={70}
-                        height={70}
-                        style={{ marginBottom: 'var(--spacing-xs)' }}
+                        width={60}
+                        height={60}
+                        style={{ maxHeight: '8vh', width: 'auto', height: 'auto' }}
                     />
                     <div className="summary-title" style={{ marginBottom: 'var(--spacing-xs)' }}>
                         🎉 Great Job!

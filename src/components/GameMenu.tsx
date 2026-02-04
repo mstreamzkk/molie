@@ -49,9 +49,9 @@ export default function GameMenu({ personalBests, onStartGame }: GameMenuProps) 
                     <Image
                         src="/molie_icon.png"
                         alt="Molie mascot"
-                        width={80}
-                        height={80}
-                        style={{ marginBottom: 'var(--spacing-sm)' }}
+                        width={60}
+                        height={60}
+                        style={{ maxHeight: '8vh', width: 'auto', height: 'auto' }}
                         priority
                     />
                     <div className="menu-title">Times Tables</div>
