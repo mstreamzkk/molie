@@ -19,12 +19,12 @@ export default function TableTransition({
         // Show message after high-five animation
         const messageTimer = setTimeout(() => {
             setShowMessage(true);
-        }, 400);
+        }, 150);
 
         // Auto-advance after celebration
         const advanceTimer = setTimeout(() => {
             onComplete();
-        }, 2000);
+        }, 700);
 
         return () => {
             clearTimeout(messageTimer);
