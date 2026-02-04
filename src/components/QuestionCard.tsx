@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Question } from '@/types/game';
 import { formatQuestion, checkAnswer } from '@/lib/gameLogic';
+import { useKeyboardVisible } from '@/hooks/useKeyboardVisible';
 
 interface QuestionCardProps {
     question: Question;
@@ -34,6 +35,10 @@ export default function QuestionCard({
     const pausedTimeRef = useRef<number>(0);
     const inputRef = useRef<HTMLInputElement>(null);
     const prevQuestionRef = useRef<Question | null>(null);
+    const isKeyboardVisible = useKeyboardVisible();
+
+    // Check if we should use compact mode (keyboard open + free-text question)
+    const useCompactMode = isKeyboardVisible && question.questionType === 'free-text';
 
     // Reset state when question changes
     useEffect(() => {
@@ -116,6 +121,43 @@ export default function QuestionCard({
 
     const progress = (questionNumber / totalQuestions) * 100;
     const questionText = formatQuestion(question.multiplier, question.multiplicand);
+
+    // Compact mode layout for when keyboard is visible (Android)
+    if (useCompactMode) {
+        return (
+            <div className="screen-layout keyboard-compact-layout">
+                {/* Compact: Question + Input together at top of visible area */}
+                <div className="keyboard-compact-content">
+                    {/* Compact question display */}
+                    <div className="keyboard-compact-question">
+                        <span className="keyboard-compact-equation">
+                            {questionText} = ?
+                        </span>
+                    </div>
+
+                    {/* Input field */}
+                    <div className="keyboard-compact-input-wrapper">
+                        <input
+                            ref={inputRef}
+                            type="number"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            className="answer-input keyboard-compact-input"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            onKeyDown={handleInputKeyDown}
+                            placeholder={`Enter ${expectedDigits} digit${expectedDigits > 1 ? 's' : ''}`}
+                            disabled={showFeedback || isPaused}
+                            autoFocus
+                        />
+                        <p className="keyboard-compact-hint">
+                            {inputValue.length} / {expectedDigits} digits
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="screen-layout">
