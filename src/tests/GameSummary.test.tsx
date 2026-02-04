@@ -58,7 +58,7 @@ describe('GameSummary', () => {
     });
 
     it('displays celebration message and mascot', () => {
-        render(
+        const { container } = render(
             <GameSummary
                 tableResults={mockTableResults}
                 skippedTables={[]}
@@ -68,7 +68,9 @@ describe('GameSummary', () => {
             />
         );
 
-        expect(screen.getByText(/great job/i)).toBeInTheDocument();
+        // Dynamic message shows based on accuracy (100% = "SUPERSTAR")
+        expect(container.querySelector('.summary-dynamic-message')).toBeInTheDocument();
+        expect(screen.getByText(/superstar/i)).toBeInTheDocument();
         expect(screen.getByAltText('Molie mascot')).toBeInTheDocument();
     });
 
