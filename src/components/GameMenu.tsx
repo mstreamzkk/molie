@@ -44,7 +44,7 @@ export default function GameMenu({ personalBests, onStartGame }: GameMenuProps) 
     return (
         <div className="game-container">
             <div className="screen-layout">
-                {/* Header - 35% */}
+                {/* Header - 30% */}
                 <div className="screen-header-large">
                     <Image
                         src="/molie_icon.png"
@@ -58,7 +58,7 @@ export default function GameMenu({ personalBests, onStartGame }: GameMenuProps) 
                     <div className="menu-subtitle">Practice makes perfect!</div>
                 </div>
 
-                {/* Body - 45% */}
+                {/* Body - 50% */}
                 <div className="screen-body">
                     <div style={{
                         display: 'flex',

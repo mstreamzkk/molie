@@ -102,9 +102,9 @@ body {
   overflow: hidden;
 }
 
-/* Menu/Summary screen sections (40/40/20 split) */
+/* Menu/Summary screen sections (30/50/20 split) */
 .screen-header-large {
-  flex: 0 0 35%;
+  flex: 0 0 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -115,7 +115,7 @@ body {
 }
 
 .screen-body {
-  flex: 0 0 45%;
+  flex: 0 0 50%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
