@@ -52,8 +52,8 @@ MENU → COUNTDOWN → PLAYING → (next table or) SUMMARY
 ## Key Features
 
 - **Two Question Types**:
-  - Multiple-choice (~70%): 4 answer buttons, instant click submission
-  - Free-text (~30%): Numeric input, auto-submits when correct digit count entered
+  - Multiple-choice (~70%): 4 answer buttons, instant click submission per times table
+  - Free-text (~30%): Numeric input, auto-submits when correct number of digits entered per times table
 
 - **Personal Bests**: Tracked per table in localStorage
 - **Pause System**: Excludes pause time from scoring
