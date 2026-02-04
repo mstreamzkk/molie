@@ -72,16 +72,23 @@ export default function QuestionCard({
         }, 600);
     }, [showFeedback, isPaused, question.correctAnswer, onAnswer]);
 
-    const handleInputSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (inputValue.trim()) {
+    const handleInputKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && inputValue.trim()) {
             handleAnswer(inputValue.trim());
         }
     };
 
-    const handleInputKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && inputValue.trim()) {
-            handleAnswer(inputValue.trim());
+    // Calculate expected number of digits for the answer
+    const expectedDigits = question.correctAnswer.toString().length;
+
+    // Auto-submit when user enters the expected number of digits
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setInputValue(value);
+
+        // Auto-submit when the correct number of digits is entered
+        if (value.length === expectedDigits && value.trim() && !showFeedback && !isPaused) {
+            handleAnswer(value.trim());
         }
     };
 
@@ -133,7 +140,7 @@ export default function QuestionCard({
                     })}
                 </div>
             ) : (
-                <form onSubmit={handleInputSubmit} style={{ marginTop: 'auto', paddingBottom: 'var(--spacing-lg)' }}>
+                <div style={{ marginTop: 'auto', paddingBottom: 'var(--spacing-lg)' }}>
                     <input
                         ref={inputRef}
                         type="number"
@@ -141,21 +148,21 @@ export default function QuestionCard({
                         pattern="[0-9]*"
                         className="answer-input"
                         value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
+                        onChange={handleInputChange}
                         onKeyDown={handleInputKeyDown}
-                        placeholder="Type your answer"
+                        placeholder={`Enter ${expectedDigits} digit${expectedDigits > 1 ? 's' : ''}`}
                         disabled={showFeedback || isPaused}
                         autoFocus
                     />
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                        style={{ width: '100%', marginTop: 'var(--spacing-md)' }}
-                        disabled={!inputValue.trim() || showFeedback || isPaused}
-                    >
-                        Submit
-                    </button>
-                </form>
+                    <p style={{
+                        textAlign: 'center',
+                        color: 'var(--text-secondary)',
+                        fontSize: 'var(--font-size-sm)',
+                        marginTop: 'var(--spacing-sm)'
+                    }}>
+                        {inputValue.length} / {expectedDigits} digits
+                    </p>
+                </div>
             )}
         </div>
     );
