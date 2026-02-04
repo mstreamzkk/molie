@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { TableResult, PersonalBests } from '@/types/game';
 import { formatTime, isPersonalBest } from '@/lib/storage';
 
@@ -34,76 +35,94 @@ export default function GameSummary({
 
     return (
         <div className="game-container">
-            <div className="summary-title">🎉 Great Job!</div>
-
-            {/* Stats overview */}
-            <div className="card" style={{ marginBottom: 'var(--spacing-lg)', textAlign: 'center' }}>
-                <div style={{ fontSize: 'var(--font-size-lg)', marginBottom: 'var(--spacing-sm)' }}>
-                    Total Time: <strong>{formatTime(totalTime)}</strong>
+            <div className="screen-layout">
+                {/* Header - 35% */}
+                <div className="screen-header-large">
+                    <Image
+                        src="/molie_icon.png"
+                        alt="Molie mascot"
+                        width={70}
+                        height={70}
+                        style={{ marginBottom: 'var(--spacing-xs)' }}
+                    />
+                    <div className="summary-title" style={{ marginBottom: 'var(--spacing-xs)' }}>
+                        🎉 Great Job!
+                    </div>
+                    <div className="card" style={{ padding: 'var(--spacing-sm) var(--spacing-md)', textAlign: 'center' }}>
+                        <div style={{ fontSize: 'var(--font-size-base)', marginBottom: '4px' }}>
+                            Time: <strong>{formatTime(totalTime)}</strong>
+                        </div>
+                        <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                            Accuracy: {accuracy}% ({correctAnswers}/{totalQuestions})
+                        </div>
+                    </div>
                 </div>
-                <div style={{ fontSize: 'var(--font-size-base)', color: 'var(--text-secondary)' }}>
-                    Accuracy: {accuracy}% ({correctAnswers}/{totalQuestions})
-                </div>
-            </div>
 
-            {/* Table results */}
-            <div className="summary-container">
-                <div style={{ fontSize: 'var(--font-size-base)', marginBottom: 'var(--spacing-md)', color: 'var(--text-secondary)' }}>
-                    Times Tables Results
-                </div>
+                {/* Body - 45% */}
+                <div className="screen-body">
+                    <div style={{
+                        fontSize: 'var(--font-size-sm)',
+                        marginBottom: 'var(--spacing-xs)',
+                        color: 'var(--text-secondary)',
+                        padding: '0 var(--spacing-xs)'
+                    }}>
+                        Results
+                    </div>
 
-                {tableResults.map((result) => {
-                    const isPB = isPersonalBest(result.table, result.timeMs);
-                    const previousBest = personalBests[result.table];
-                    const tableCorrect = result.questions.filter(q => q.isCorrect).length;
-                    const tableTotal = result.questions.length;
+                    <div className="screen-body-scroll">
+                        {tableResults.map((result) => {
+                            const isPB = isPersonalBest(result.table, result.timeMs);
+                            const tableCorrect = result.questions.filter(q => q.isCorrect).length;
+                            const tableTotal = result.questions.length;
 
-                    return (
-                        <div key={result.table} className="summary-card">
-                            <div>
-                                <div className="summary-table-name">{result.table}× Table</div>
-                                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                                    {tableCorrect}/{tableTotal} correct
+                            return (
+                                <div key={result.table} className="summary-card">
+                                    <div>
+                                        <div className="summary-table-name">{result.table}× Table</div>
+                                        <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                                            {tableCorrect}/{tableTotal} correct
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+                                        <div className="summary-time">{formatTime(result.timeMs)}</div>
+                                        {isPB && (
+                                            <div className="personal-best-badge">🏆 PB!</div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-                                <div className="summary-time">{formatTime(result.timeMs)}</div>
-                                {isPB && (
-                                    <div className="personal-best-badge">🏆 PB!</div>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
+                            );
+                        })}
 
-                {skippedTables.length > 0 && (
-                    <>
-                        <div style={{
-                            fontSize: 'var(--font-size-sm)',
-                            marginTop: 'var(--spacing-lg)',
-                            marginBottom: 'var(--spacing-sm)',
-                            color: 'var(--text-secondary)'
-                        }}>
-                            Skipped
-                        </div>
-                        {skippedTables.map((table) => (
-                            <div key={table} className="summary-card" style={{ opacity: 0.6 }}>
-                                <div className="summary-table-name">{table}× Table</div>
-                                <div style={{ color: 'var(--text-secondary)' }}>Skipped</div>
-                            </div>
-                        ))}
-                    </>
-                )}
-            </div>
+                        {skippedTables.length > 0 && (
+                            <>
+                                <div style={{
+                                    fontSize: 'var(--font-size-xs)',
+                                    marginTop: 'var(--spacing-sm)',
+                                    marginBottom: 'var(--spacing-xs)',
+                                    color: 'var(--text-secondary)'
+                                }}>
+                                    Skipped
+                                </div>
+                                {skippedTables.map((table) => (
+                                    <div key={table} className="summary-card" style={{ opacity: 0.6 }}>
+                                        <div className="summary-table-name">{table}× Table</div>
+                                        <div style={{ color: 'var(--text-secondary)' }}>Skipped</div>
+                                    </div>
+                                ))}
+                            </>
+                        )}
+                    </div>
+                </div>
 
-            {/* Action buttons */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)', marginTop: 'var(--spacing-lg)' }}>
-                <button className="btn btn-primary" onClick={onPlayAgain}>
-                    Play Again
-                </button>
-                <button className="btn btn-secondary" onClick={onBackToMenu}>
-                    Back to Menu
-                </button>
+                {/* Footer - 20% */}
+                <div className="screen-footer">
+                    <button className="btn btn-primary" onClick={onPlayAgain} style={{ width: '100%' }}>
+                        Play Again
+                    </button>
+                    <button className="btn btn-secondary" onClick={onBackToMenu} style={{ width: '100%' }}>
+                        Back to Menu
+                    </button>
+                </div>
             </div>
         </div>
     );

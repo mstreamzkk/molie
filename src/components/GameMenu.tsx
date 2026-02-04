@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { PersonalBests } from '@/types/game';
 import { getAvailableTables } from '@/lib/gameLogic';
 import { formatTime } from '@/lib/storage';
@@ -29,45 +30,72 @@ export default function GameMenu({ personalBests, onStartGame }: GameMenuProps) 
         setSelectedTables(allTables);
     };
 
+    const clearAll = () => {
+        // Keep at least one table selected (first one)
+        setSelectedTables([allTables[0]]);
+    };
+
     const handleStart = () => {
         if (selectedTables.length > 0) {
             onStartGame(selectedTables);
         }
     };
 
-    const hasPreviousGames = Object.keys(personalBests).length > 0;
-
     return (
         <div className="game-container">
-            <div className="menu-container">
-                <div>
-                    <div className="menu-title">🧮 Times Tables</div>
+            <div className="screen-layout">
+                {/* Header - 35% */}
+                <div className="screen-header-large">
+                    <Image
+                        src="/molie_icon.png"
+                        alt="Molie mascot"
+                        width={80}
+                        height={80}
+                        style={{ marginBottom: 'var(--spacing-sm)' }}
+                        priority
+                    />
+                    <div className="menu-title">Times Tables</div>
                     <div className="menu-subtitle">Practice makes perfect!</div>
                 </div>
 
-                {/* Table selection */}
-                <div>
+                {/* Body - 45% */}
+                <div className="screen-body">
                     <div style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        marginBottom: 'var(--spacing-md)'
+                        marginBottom: 'var(--spacing-sm)',
+                        padding: '0 var(--spacing-xs)'
                     }}>
-                        <span style={{ fontSize: 'var(--font-size-base)' }}>
-                            Select tables to practice
+                        <span style={{ fontSize: 'var(--font-size-sm)' }}>
+                            Select tables
                         </span>
-                        <button
-                            onClick={selectAll}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                color: 'var(--accent-blue)',
-                                cursor: 'pointer',
-                                fontSize: 'var(--font-size-sm)'
-                            }}
-                        >
-                            Select All
-                        </button>
+                        <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+                            <button
+                                onClick={clearAll}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: 'var(--text-secondary)',
+                                    cursor: 'pointer',
+                                    fontSize: 'var(--font-size-xs)'
+                                }}
+                            >
+                                Clear
+                            </button>
+                            <button
+                                onClick={selectAll}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: 'var(--accent-blue)',
+                                    cursor: 'pointer',
+                                    fontSize: 'var(--font-size-xs)'
+                                }}
+                            >
+                                Select All
+                            </button>
+                        </div>
                     </div>
 
                     <div className="table-selection">
@@ -85,9 +113,9 @@ export default function GameMenu({ personalBests, onStartGame }: GameMenuProps) 
                                         <span>{table}×</span>
                                         {hasBest && (
                                             <span style={{
-                                                fontSize: '0.6rem',
+                                                fontSize: '0.55rem',
                                                 opacity: 0.7,
-                                                marginTop: '2px'
+                                                marginTop: '1px'
                                             }}>
                                                 {formatTime(hasBest.bestTimeMs)}
                                             </span>
@@ -99,28 +127,17 @@ export default function GameMenu({ personalBests, onStartGame }: GameMenuProps) 
                     </div>
                 </div>
 
-                {/* Personal bests section */}
-                {hasPreviousGames && (
-                    <div style={{ marginTop: 'var(--spacing-md)' }}>
-                        <div style={{
-                            fontSize: 'var(--font-size-sm)',
-                            color: 'var(--text-secondary)',
-                            textAlign: 'center'
-                        }}>
-                            🏆 Personal bests shown on each table
-                        </div>
-                    </div>
-                )}
-
-                {/* Start button */}
-                <button
-                    className="btn btn-primary"
-                    onClick={handleStart}
-                    disabled={selectedTables.length === 0}
-                    style={{ marginTop: 'auto' }}
-                >
-                    Start Practice ({selectedTables.length} tables)
-                </button>
+                {/* Footer - 20% */}
+                <div className="screen-footer">
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleStart}
+                        disabled={selectedTables.length === 0}
+                        style={{ width: '100%' }}
+                    >
+                        Start Practice ({selectedTables.length} tables)
+                    </button>
+                </div>
             </div>
         </div>
     );

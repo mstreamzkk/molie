@@ -185,24 +185,16 @@ export default function Home() {
       {/* Playing */}
       {gameState === 'playing' && questions.length > 0 && (
         <div className="game-container">
-          {/* Pause button */}
-          <button className="pause-btn" onClick={handlePause} aria-label="Pause">
-            ⏸️
-          </button>
-
           <QuestionCard
             question={questions[currentQuestionIndex]}
             questionNumber={currentQuestionIndex + 1}
             totalQuestions={questions.length}
             tableName={currentTable}
             onAnswer={handleAnswer}
+            onSkip={handleSkipTable}
+            onPause={handlePause}
             isPaused={isPaused}
           />
-
-          {/* Skip button */}
-          <button className="skip-btn" onClick={handleSkipTable}>
-            Skip {currentTable}× table →
-          </button>
         </div>
       )}
 

@@ -16,7 +16,7 @@
   --error-red: #f87171;
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.8);
-  
+
   /* Typography */
   --font-size-xs: 0.875rem;
   --font-size-sm: 1rem;
@@ -27,7 +27,7 @@
   --font-size-3xl: 3.5rem;
   --font-size-4xl: 5rem;
   --font-size-5xl: 8rem;
-  
+
   /* Spacing */
   --spacing-xs: 0.5rem;
   --spacing-sm: 0.75rem;
@@ -35,18 +35,18 @@
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
-  
+
   /* Border radius */
   --radius-sm: 0.5rem;
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
   --radius-full: 9999px;
-  
+
   /* Shadows */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
-  
+
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
@@ -81,14 +81,98 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  height: 100dvh; /* Dynamic viewport height for mobile */
+  height: 100dvh;
+  /* Dynamic viewport height for mobile */
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
   padding: var(--spacing-md) var(--spacing-lg);
   padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
   position: relative;
+  overflow: hidden;
+  /* Prevent scrolling */
+}
+
+/* Screen layout system for fixed-height mobile screens */
+.screen-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Menu/Summary screen sections (40/40/20 split) */
+.screen-header-large {
+  flex: 0 0 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-sm);
+  overflow: hidden;
+}
+
+.screen-body {
+  flex: 0 0 45%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: var(--spacing-sm) 0;
+}
+
+.screen-body-scroll {
+  flex: 1;
   overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.screen-body-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.screen-footer {
+  flex: 0 0 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+}
+
+/* Quiz screen sections (10/20/50/20 split) */
+.quiz-header {
+  flex: 0 0 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xs) 0;
+}
+
+.quiz-question {
+  flex: 0 0 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz-answers {
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--spacing-sm) 0;
+}
+
+.quiz-footer {
+  flex: 0 0 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: var(--spacing-sm) 0;
 }
 
 /* Card styles */
@@ -112,7 +196,8 @@ body {
   border: none;
   cursor: pointer;
   transition: all var(--transition-fast);
-  min-height: 56px; /* Touch-friendly */
+  min-height: 56px;
+  /* Touch-friendly */
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -191,11 +276,11 @@ body {
 }
 
 .question-equation {
-  font-size: var(--font-size-4xl);
+  font-size: clamp(2rem, 8vw, var(--font-size-4xl));
   font-weight: 800;
   text-align: center;
-  margin: var(--spacing-xl) 0;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 /* Countdown styles */
@@ -224,10 +309,12 @@ body {
     transform: scale(0.5);
     opacity: 0;
   }
+
   50% {
     transform: scale(1.1);
     opacity: 1;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -353,9 +440,11 @@ body {
   0% {
     transform: scale(0);
   }
+
   50% {
     transform: scale(1.2);
   }
+
   100% {
     transform: scale(1);
   }
@@ -437,14 +526,30 @@ body {
 }
 
 @keyframes feedbackCorrect {
-  0% { background-color: var(--success-green); }
-  100% { background-color: transparent; }
+  0% {
+    background-color: var(--success-green);
+  }
+
+  100% {
+    background-color: transparent;
+  }
 }
 
 @keyframes feedbackIncorrect {
-  0%, 25%, 75% { transform: translateX(-4px); }
-  50% { transform: translateX(4px); }
-  100% { transform: translateX(0); }
+
+  0%,
+  25%,
+  75% {
+    transform: translateX(-4px);
+  }
+
+  50% {
+    transform: translateX(4px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 /* Header */
