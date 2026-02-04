@@ -83,14 +83,10 @@ export default function GameSummary({
                     <Image
                         src="/molie_icon.png"
                         alt="Molie mascot"
-                        width={60}
-                        height={60}
-                        style={{ maxHeight: '8vh', width: 'auto', height: 'auto' }}
+                        width={50}
+                        height={50}
                     />
-                    <div
-                        className={`summary-title ${isSuperstar ? 'superstar' : ''}`}
-                        style={{ marginBottom: 'var(--spacing-xs)' }}
-                    >
+                    <div className={`summary-title ${isSuperstar ? 'superstar' : ''}`}>
                         {message}
                     </div>
                 </div>
