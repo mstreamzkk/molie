@@ -129,11 +129,18 @@ export function generateAnswerChoices(
     }
 
     // Last resort: just add nearby numbers
+    // Last resort: just add nearby numbers
     offset = 1;
-    while (choices.size < 4) {
-        const fallback = correctAnswer + (choices.size % 2 === 0 ? offset : -offset);
-        if (fallback > 0 && fallback !== correctAnswer && !choices.has(fallback)) {
-            choices.add(fallback);
+    while (choices.size < 4 && offset < 100) {
+        // Try both positive and negative offsets
+        const candidates = [correctAnswer + offset, correctAnswer - offset];
+
+        for (const candidate of candidates) {
+            if (choices.size >= 4) break;
+
+            if (candidate > 0 && candidate !== correctAnswer && !choices.has(candidate)) {
+                choices.add(candidate);
+            }
         }
         offset++;
     }
