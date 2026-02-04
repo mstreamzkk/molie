@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import GameSummary from '@/components/GameSummary';
 import { TableResult } from '@/types/game';
 
@@ -15,6 +15,12 @@ jest.mock('next/image', () => ({
 jest.mock('@/lib/storage', () => ({
     formatTime: (ms: number) => `${(ms / 1000).toFixed(1)}s`,
     isPersonalBest: () => false,
+}));
+
+// Mock the CelebrationEffect component to avoid animation complexity in tests
+jest.mock('@/components/CelebrationEffect', () => ({
+    __esModule: true,
+    default: () => null,
 }));
 
 describe('GameSummary', () => {
@@ -52,9 +58,9 @@ describe('GameSummary', () => {
         );
 
         expect(container.querySelector('.screen-layout')).toBeInTheDocument();
-        expect(container.querySelector('.screen-header-large')).toBeInTheDocument();
-        expect(container.querySelector('.screen-body')).toBeInTheDocument();
-        expect(container.querySelector('.screen-footer')).toBeInTheDocument();
+        expect(container.querySelector('.summary-header')).toBeInTheDocument();
+        expect(container.querySelector('.summary-stats-card')).toBeInTheDocument();
+        expect(container.querySelector('.summary-actions')).toBeInTheDocument();
     });
 
     it('displays celebration message and mascot', () => {
@@ -69,7 +75,7 @@ describe('GameSummary', () => {
         );
 
         // Dynamic message shows based on accuracy (100% = "SUPERSTAR")
-        expect(container.querySelector('.summary-dynamic-message')).toBeInTheDocument();
+        expect(container.querySelector('.summary-title')).toBeInTheDocument();
         expect(screen.getByText(/superstar/i)).toBeInTheDocument();
         expect(screen.getByAltText('Molie mascot')).toBeInTheDocument();
     });
@@ -85,12 +91,12 @@ describe('GameSummary', () => {
             />
         );
 
-        expect(screen.getByText(/time:/i)).toBeInTheDocument();
-        expect(screen.getByText(/accuracy:/i)).toBeInTheDocument();
-        expect(screen.getByText(/100%/)).toBeInTheDocument();
+        expect(screen.getByText('Total Time')).toBeInTheDocument();
+        expect(screen.getByText('Accuracy')).toBeInTheDocument();
+        expect(screen.getByText('100%')).toBeInTheDocument();
     });
 
-    it('shows table results', () => {
+    it('shows table results in modal', () => {
         render(
             <GameSummary
                 tableResults={mockTableResults}
@@ -100,6 +106,9 @@ describe('GameSummary', () => {
                 onBackToMenu={mockOnBackToMenu}
             />
         );
+
+        // Click "Review Results" to open modal
+        fireEvent.click(screen.getByRole('button', { name: /review results/i }));
 
         expect(screen.getByText('6× Table')).toBeInTheDocument();
         expect(screen.getByText('2/2 correct')).toBeInTheDocument();
@@ -120,7 +129,7 @@ describe('GameSummary', () => {
         expect(screen.getByRole('button', { name: /back to menu/i })).toBeInTheDocument();
     });
 
-    it('shows skipped tables when present', () => {
+    it('shows skipped tables in modal when present', () => {
         render(
             <GameSummary
                 tableResults={mockTableResults}
@@ -130,6 +139,9 @@ describe('GameSummary', () => {
                 onBackToMenu={mockOnBackToMenu}
             />
         );
+
+        // Click "Review Results" to open modal
+        fireEvent.click(screen.getByRole('button', { name: /review results/i }));
 
         // 'Skipped' appears as section header and for each skipped table row
         const skippedElements = screen.getAllByText('Skipped');

@@ -4,7 +4,9 @@ import GameMenu from '@/components/GameMenu';
 // Mock Next.js Image component
 jest.mock('next/image', () => ({
     __esModule: true,
-    default: ({ alt, ...props }: { alt: string;[key: string]: unknown }) => {
+    default: ({ alt, priority, ...props }: { alt: string; priority?: boolean; [key: string]: unknown }) => {
+        // Filter out Next.js-specific props that aren't valid for img elements
+        void priority; // Acknowledge but don't pass to img
         // eslint-disable-next-line @next/next/no-img-element
         return <img alt={alt} {...props} />;
     },
