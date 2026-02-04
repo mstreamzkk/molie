@@ -36,7 +36,7 @@ export default function GameSummary({
     return (
         <div className="game-container">
             <div className="screen-layout">
-                {/* Header - 35% */}
+                {/* Header - 30% */}
                 <div className="screen-header-large">
                     <Image
                         src="/molie_icon.png"
@@ -58,7 +58,7 @@ export default function GameSummary({
                     </div>
                 </div>
 
-                {/* Body - 45% */}
+                {/* Body - 50% */}
                 <div className="screen-body">
                     <div style={{
                         fontSize: 'var(--font-size-sm)',
